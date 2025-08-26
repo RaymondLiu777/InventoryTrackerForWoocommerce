@@ -1,0 +1,40 @@
+/* Column widths for Inventory Tracker */
+.toplevel_page_inventory_tracker_list_table .column-timestamp {
+    width: 10ch;
+}
+
+.toplevel_page_inventory_tracker_list_table .column-product_sku {
+    width: 10ch;
+}
+
+.toplevel_page_inventory_tracker_list_table .column-product_id {
+    width: 5ch;
+}
+
+.toplevel_page_inventory_tracker_list_table .column-order_id {
+    width: 10ch;
+}
+
+.toplevel_page_inventory_tracker_list_table .column-user {
+    width: 10ch;
+}
+
+.toplevel_page_inventory_tracker_list_table .column-stock_before {
+    width: 5ch;
+}
+
+.toplevel_page_inventory_tracker_list_table .column-stock_change {
+    width: 5ch;
+}
+
+.toplevel_page_inventory_tracker_list_table .column-stock_after {
+    width: 5ch;
+}
+
+.toplevel_page_inventory_tracker_list_table .column-reason {
+    width: 10ch;
+}
+
+.toplevel_page_inventory_tracker_list_table .column-notes {
+    width: 40ch;
+}
