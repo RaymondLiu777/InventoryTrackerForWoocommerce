@@ -199,19 +199,22 @@ class InventoryTrackerListTable extends \WP_List_Table
         if (!isset($search_args['product_sku']) && !isset($search_args['product_id']) ) {
             return array();
         }
-        if(isset($search_args['filter_date'])) {
+        if(isset($search_args['date'])) {
             return array();
         }
 
+        $products = array();
         if(isset($search_args['product_id'])) {
-            $products = array(
-                wc_get_product($search_args['product_id'])
-            );
+            $product = wc_get_product($search_args['product_id']);
+            if($product) {
+                $products[] = $product;
+            }
         }
         if(isset($search_args['product_sku'])) {
-            $products = array(
-                wc_get_product( wc_get_product_id_by_sku($search_args['product_sku']) )
-            );
+            $product = wc_get_product( wc_get_product_id_by_sku($search_args['product_sku']) );
+            if($product) {
+                $products[] = $product;
+            }
         }
 
         // Too many products to display
@@ -234,7 +237,7 @@ class InventoryTrackerListTable extends \WP_List_Table
                 $product_info['stock_after'] = $product->get_stock_quantity();
                 $product_info['reason'] = __('Current Stock', 'inventory-tracker-for-woocommerce');
             } else {
-                $product_info['reason'] = __('Stock Tracking Not Enabled', 'inventory-tracker-for-woocommerce');
+                continue;
             }
             
             $products_info[] = $product_info;

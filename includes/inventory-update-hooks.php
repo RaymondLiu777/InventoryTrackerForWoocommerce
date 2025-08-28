@@ -170,15 +170,14 @@ class InventoryUpdateHooks {
      * @param array                     $change {
      *     @type int $from Old stock.
      *     @type int $to   New stock.
-     *     @type \WC_Product $product Product object.
      * }
      * @param \WC_Order                 $order
      */
     public static function line_item_removed($item_id, $item, $changed_stock, $order) {
         if($item && $changed_stock) {
-            $product = $changed_stock['product'];
+            $product = $item->get_product();
             $notes = sprintf(
-                'Admin deleted line item for %s with quantity %d',
+                'Admin deleted order line item for %s with quantity %d',
                 $product->get_sku(),
                 $item->get_quantity()
             );
@@ -206,7 +205,6 @@ class InventoryUpdateHooks {
      * @param array                     $change {
      *     @type int $from Old stock.
      *     @type int $to   New stock.
-     *     @type \WC_Product $product Product object.
      * }
      * @param \WC_Order                 $order
      */
@@ -216,7 +214,7 @@ class InventoryUpdateHooks {
             $stock_change = $changed_stock['to'] - $changed_stock['from'];
             $line_item_qty = $item->get_quantity();
             $notes = sprintf(
-                'Admin updated line item for %s from %d to %d',
+                'Admin updated order line item for %s from %d to %d',
                 $product->get_sku(),
                 ($line_item_qty + $stock_change),
                 $line_item_qty
