@@ -71,6 +71,7 @@ final class InventoryTrackerForWoocommerce {
         );
 
         add_action( "load-$hook_suffix", [ $this, 'add_screen_options' ] );
+        add_action( "load-$hook_suffix", [ $this, 'add_screen_help_tabs' ] );
     }
 
     public function add_screen_options() {
@@ -88,6 +89,56 @@ final class InventoryTrackerForWoocommerce {
         add_screen_option( 'per_page', $args );
 
         $this->table = new InventoryTrackerListTable();
+    }
+
+    public function add_screen_help_tabs() {
+        $screen = get_current_screen();
+        if ( ! is_object( $screen ) || $screen->id !== 'toplevel_page_inventory_tracker_list_table' ) {
+            return;
+        }
+        $screen->add_help_tab( array(
+            'id'	=> 'itfw_main_tab',
+            'title'	=> __('Inventory Tracker For WooCommerce'),
+            'content'	=> <<<HTML
+                <h2>How to Use Inventory Tracker</h2>
+                <p>This screen helps you <strong>monitor and manage product stock</strong> in WooCommerce.</p>
+                <p>Screen Options:</p>
+                <ul>
+                    <li>Filter inventory data by <em>SKU</em> or <em>Product ID</em></li>
+                    <li>Filter inventory data by <em>Date</em></li>
+                    <li>Track which <em>users made inventory changes</em></li>
+                </ul>
+                <p><strong>Note: Changes are only tracked while this plugin is active.</strong></p>
+            HTML,
+        ) );
+        $screen->add_help_tab( array(
+            'id'	=> 'itfw_woocommerce_tab',
+            'title'	=> __('WooCommerce Actions'),
+            'content'	=> <<<HTML
+                <h2>Tracked WooCommerce Actions</h2>
+                <p>Inventory changes are automatically tracked when the following events occur:</p>
+                <ul>
+                    <li>Changes made through the <em>Product Editor</em></li>
+                    <li>Changes made using <em>Bulk Edit</em> or <em>Quick Edit</em></li>
+                    <li>Stock increases/decreases from <em>Processing or Cancelled</em> orders</li>
+                    <li>Stock increases from <em>Refunded</em> orders</li>
+                </ul>
+            HTML,
+        ) );
+        $screen->add_help_tab( array(
+            'id'	=> 'itfw_atum_tab',
+            'title'	=> __('ATUM Actions'),
+            'content'	=> <<<HTML
+                <h2>Tracked ATUM Actions</h2>
+                <p>Inventory changes are automatically tracked when the following events occur:</p>
+                <ul>
+                    <li>Changes made through <em>Stock Central</em></li>
+                    <li>Stock increases/decreases from receiving <em>POs</em></li>
+                </ul>
+                <p><strong>Note: These only apply to the free ATUM core, not any of their paid extensions</strong></p>
+            HTML,
+        ) );
+
     }
 
     public function render_admin_page() {
