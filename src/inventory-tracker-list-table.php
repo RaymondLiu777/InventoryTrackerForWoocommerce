@@ -56,6 +56,9 @@ class InventoryTrackerListTable extends \WP_List_Table
             if($_REQUEST['search-filter'] == "product_id") {
                 $search_args['product_id'] = absint($search_value) ;
             }
+            if($_REQUEST['search-filter'] == "order_id") {
+                $search_args['order_id'] = absint($search_value) ;
+            }
         }
 
         // Filtering
@@ -162,7 +165,18 @@ class InventoryTrackerListTable extends \WP_List_Table
         <select name="search-filter" id="order-search-filter">
             <option value="product_sku" <?php selected( 'product_sku', $selected) ?>>Product SKU</option>
             <option value="product_id" <?php selected( 'product_id', $selected) ?>>Product ID</option>
+            <option value="order_id" <?php selected( 'order_id', $selected) ?>>Order ID</option>
         </select>
+        <?php
+    }
+
+    protected function display_filters() {
+        $selected_date = isset( $_GET['filter_date'] ) ? esc_attr( $_GET['filter_date'] ) : '';
+        ?>
+        <div class="alignleft actions">
+            <input type="text" name="filter_date" id="filter_date" placeholder="Select a date" value="<?php echo esc_attr( $selected_date ) ?>" />
+            <?php submit_button('Filter', 'button', 'filter_action', false); ?>
+        </div>
         <?php
     }
 
@@ -180,23 +194,22 @@ class InventoryTrackerListTable extends \WP_List_Table
 
     public function extra_tablenav($which) {
         if ($which === 'top') {
-            $selected_date = isset( $_GET['filter_date'] ) ? esc_attr( $_GET['filter_date'] ) : '';
-            ?>
-            <div class="alignleft actions">
-                <input type="text" name="filter_date" id="filter_date" placeholder="Select a date" value="<?php echo esc_attr( $selected_date ) ?>" />
-                <?php submit_button('Filter', 'button', 'filter_action', false); ?>
-            </div>
-            <?php
+            $this->display_filters();
         }
     }
 
     // Get current inventory of products to display at the top
     function get_current_inventory($search_args) {
-        // Only display current inventory when on first page, there is a product sku/id and no filter dates
+        // Only display current inventory when on first page
         if( $this->get_pagenum() !== 1) {
             return array();
         }
+        // Only if there is a product sku/id
         if (!isset($search_args['product_sku']) && !isset($search_args['product_id']) ) {
+            return array();
+        }
+        // If there is an order_id or filter dates, do not get current inventory
+        if(isset($search_args['order_id'])) {
             return array();
         }
         if(isset($search_args['date'])) {
@@ -217,7 +230,7 @@ class InventoryTrackerListTable extends \WP_List_Table
             }
         }
 
-        // Too many products to display
+        // Limit number of products to display
         if( !isset($products) || count($products)  >= 10 ) {
             return array();
         }

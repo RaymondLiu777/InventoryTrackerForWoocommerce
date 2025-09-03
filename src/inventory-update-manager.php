@@ -96,7 +96,7 @@ class InventoryUpdateManager {
         return $result ? $wpdb->insert_id : false;
     }
 
-    // 
+    // Construct the where clause using the params passed in
     private function construct_where_clause($params = array()) {
         global $wpdb;
         
@@ -111,6 +111,10 @@ class InventoryUpdateManager {
         if (isset($params['product_sku'])) {
             $where_clauses[] = 'product_sku LIKE %s';
             $query_params[] = '%' . $wpdb->esc_like($params['product_sku']) . '%';
+        }
+        if (isset($params['order_id'])) {
+            $where_clauses[] = 'order_id = %d';
+            $query_params[] = $params['order_id'];
         }
         if (isset($params['date'])) {
             $where_clauses[] = 'DATE(`timestamp`) <= %s';
