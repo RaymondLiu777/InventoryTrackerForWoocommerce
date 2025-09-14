@@ -144,7 +144,14 @@ class InventoryUpdateManager {
 
         // First get count
         $query = "SELECT COUNT(*) FROM {$this->table_name} {$where_sql}";
-        $prepared_query = $wpdb->prepare($query, ...$query_params);
+        if(count($query_params) == 0) {
+            // Don't use prepare if there are no query params
+            $prepared_query = $query;
+        }
+        else {
+            $prepared_query = $wpdb->prepare($query, ...$query_params);
+        }
+        
         $count = $wpdb->get_var( $prepared_query );
 
 
